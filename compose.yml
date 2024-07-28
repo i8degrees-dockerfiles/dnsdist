@@ -10,6 +10,7 @@ networks:
     attachable: true
     external: true
 
+#volumes:
 
 services:
   dnsdist:
