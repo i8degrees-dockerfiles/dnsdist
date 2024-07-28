@@ -1,0 +1,41 @@
+#
+# 1. https://hub.docker.com/r/powerdns/dnsdist-19
+---
+
+#version: '3'
+
+networks:
+  traefik-proxy:
+    driver: overlay
+    attachable: true
+    external: true
+
+
+services:
+  dnsdist:
+    hostname: "dnsdist-1"
+    image: "powerdns/dnsdist-19:1.9.6"
+    restart: unless-stopped
+    tty: true
+    stdin_open: true
+    command: ["--disable-syslog", "--verbose", "--local=0.0.0.0:53"]
+    #command: ["--disable-syslog", "--uid", "dnsdist", "--gid", "dnsdist", "--verbose"]
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - ./mounts/dnsdist.conf:/etc/dnsdist/dnsdist.conf:ro
+    environment:
+      - TZ=America/Chicago
+      - LC_TIME=C.UTF-8
+      - LANG=en_US.UTF-8
+    ports:
+      # DNS over HTTP(S)
+      - "8053:8053"
+      # DNS over TLS
+      - "853:853"
+      # unencrypted DNS TCP
+      - "53:53"
+      # unencrypted DNS UDP
+      - "53:53/udp"
+    networks:
+      - traefik-proxy
+
