@@ -1,0 +1,12 @@
+# https://balaskas.gr/blog/2017/04/29/protecting-your-authoritative-powerdns-server-with-dnsdist/
+
+/var/log/dnsdist.log {
+    rotate 7
+    daily
+    dateext
+    delaycompress
+    compress
+    postrotate
+        [ ! -f /var/run/dnsdist.pid ] || kill -USR1 `cat /var/run/dnsdist.pid`
+    endscript
+}
