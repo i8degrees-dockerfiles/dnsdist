@@ -9,6 +9,6 @@ entrypoint.sh
 !.env
 !.env.dist
 !mounts/config/conf.d
-
+!mounts/config
 mounts/logs/*
 
