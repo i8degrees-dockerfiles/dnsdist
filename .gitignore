@@ -1,7 +1,8 @@
 
-# symbolic links
+# links
 conf.d
 dnsdist.conf
+entrypoint.sh
 
 .env.secrets
 !.env.secrets.dist

@@ -22,21 +22,25 @@ services:
   dnsdist:
     hostname: "dnsdist-1"
     image: "powerdns/dnsdist-19:1.9.6"
-    restart: always
+    restart: "on-failure:2"
     tty: true
     stdin_open: true
-    command: ["--disable-syslog", "--uid", "pdns", "--gid", "pdns", "--verbose", "--local=0.0.0.0:53"]
+    #command: ["/etc/dnsdist/entrypoint.sh"]
+    command: ["--disable-syslog", "--uid", "pdns", "--gid", "pdns", "--verbose"]
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "./mounts/config/conf.d:/etc/dnsdist/conf.d:ro"
       - "./mounts/config/dnsdist.conf:/etc/dnsdist/dnsdist.conf:ro"
+      - "./mounts/config/entrypoint.sh:/etc/dnsdist/entrypoint.sh:ro"
       # FIXME(JEFF): permission denied error -- as the pdns user inside the container
       #- "./mounts/logs/dnsdist.log:/var/log/dnsdist.log:rw"
-      - config:/test:rw
+      #- config:/test:rw
     environment:
       - TZ=America/Chicago
       - LC_TIME=C.UTF-8
       - LANG=en_US.UTF-8
+    env_file:
+      - "./.env.secrets"
     ports:
       # DNS over HTTP(S)
       - "8053:8053"
