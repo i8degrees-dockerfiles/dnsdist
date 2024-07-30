@@ -4,6 +4,7 @@ conf.d
 dnsdist.conf
 
 .env.secrets
+!.env.secrets.dist
 !.env
 !.env.dist
 !mounts/config/conf.d
