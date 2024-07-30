@@ -46,6 +46,8 @@ services:
       - "53:53"
       # unencrypted DNS UDP
       - "53:53/udp"
+      # webserver
+      - "127.0.0.1:8081:8081"
     networks:
       - traefik-proxy
 
