@@ -15,7 +15,7 @@ volumes:
     driver: local
     driver_opts:
       type: nfs
-      o: addr=fs1-san.home,rw
+      o: addr=fs1-san.home,rw,nolock,soft
       device: :/mnt/fs1/Applications
 
 services:
@@ -25,12 +25,12 @@ services:
     restart: always
     tty: true
     stdin_open: true
-    command: ["--disable-syslog", "--verbose", "--local=0.0.0.0:53"]
-    #command: ["--disable-syslog", "--uid", "dnsdist", "--gid", "dnsdist", "--verbose"]
+    command: ["--disable-syslog", "--uid", "pdns", "--gid", "pdns", "--verbose", "--local=0.0.0.0:53"]
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
-      #- ./mounts/dnsdist.conf:/etc/dnsdist/dnsdist.conf:ro
+      - "./mounts/config/conf.d:/etc/dnsdist/conf.d:ro"
       - "./mounts/config/dnsdist.conf:/etc/dnsdist/dnsdist.conf:ro"
+      # FIXME(JEFF): permission denied error -- as the pdns user inside the container
       #- "./mounts/logs/dnsdist.log:/var/log/dnsdist.log:rw"
       - config:/test:rw
     environment:

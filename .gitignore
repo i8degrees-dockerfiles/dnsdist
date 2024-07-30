@@ -1,8 +1,12 @@
-dnsdist.conf # symbolic link
+
+# symbolic links
+conf.d
+dnsdist.conf
 
 .env.secrets
 !.env
 !.env.dist
+!mounts/config/conf.d
 
 mounts/logs/*
 
