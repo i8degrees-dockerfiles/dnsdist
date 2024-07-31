@@ -1,3 +1,0 @@
-
-addAction(AllRule(), LogAction("/var/log/dnsdist.log", false, true, false))
-
