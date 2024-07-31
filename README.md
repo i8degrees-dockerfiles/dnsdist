@@ -38,3 +38,10 @@ integrated with `dnsdist`, please generate a passphrase:
 docker compose up -d
 docker compose logs
 ```
+
+## TODO
+
+- [ ] setup blacklist database with CDB tools; I would like to see 
+our entire *RPZ* sourcing lists at **ns3.home** and **ns4.home** to
+be available as a CDB file that we can use here.
+  * [blocklist-domains](https://github.com/dmachard/blocklist-domains)
