@@ -1,14 +1,18 @@
 
-# links
+# links at top-level of repo
 conf.d
 dnsdist.conf
-entrypoint.sh
+dnsdist.log
 
+# filter list
 .env.secrets
+mounts/logs/*
+mounts/config/conf.d/_api.conf
+
+# non-filter list
 !.env.secrets.dist
 !.env
 !.env.dist
 !mounts/config/conf.d
 !mounts/config
-mounts/logs/*
 

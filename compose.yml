@@ -24,16 +24,16 @@ services:
     image: "powerdns/dnsdist-19:1.9.6"
     restart: "on-failure:2"
     tty: true
+    user: "pdns:pdns" # 953:953
     stdin_open: true
-    #command: ["/etc/dnsdist/entrypoint.sh"]
+    #command: ["--disable-syslog", "--uid", "pdns", "--gid", "pdns", "--verbose", "--check-config"]
     command: ["--disable-syslog", "--uid", "pdns", "--gid", "pdns", "--verbose"]
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
+      - "./mounts/config/conf.d/_api.conf:/etc/dnsdist/conf.d/_api.conf:rw"
       - "./mounts/config/conf.d:/etc/dnsdist/conf.d:ro"
       - "./mounts/config/dnsdist.conf:/etc/dnsdist/dnsdist.conf:ro"
-      - "./mounts/config/entrypoint.sh:/etc/dnsdist/entrypoint.sh:ro"
-      # FIXME(JEFF): permission denied error -- as the pdns user inside the container
-      #- "./mounts/logs/dnsdist.log:/var/log/dnsdist.log:rw"
+      - "./mounts/logs/dnsdist.log:/var/log/dnsdist.log:rw"
       #- config:/test:rw
     environment:
       - TZ=America/Chicago
@@ -51,7 +51,9 @@ services:
       # unencrypted DNS UDP
       - "53:53/udp"
       # webserver
-      - "127.0.0.1:8081:8081"
+      - "127.0.0.1:8083:8083"
+      # console
+      - "127.0.0.1:5199:5199"
     networks:
       - traefik-proxy
 
