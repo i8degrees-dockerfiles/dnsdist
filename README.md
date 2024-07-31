@@ -56,4 +56,7 @@ our entire *RPZ* sourcing lists at **ns3.home** and **ns4.home** to
 be available as a CDB file that we can use here.
   * [blocklist-domains](https://github.com/dmachard/blocklist-domains)
   * <https://github.com/dmachard/python-blocklist-aggregator/blob/main/blocklist_aggregator/blocklist.conf>
+- [ ] Finalize IPv6 deployment; this includes re-adding `AAAA` entry for `docker.fs1.home` as `dnsdist`
+was trying to default to using this address first in name resolution
+  * `docker.fs1.home 60      IN      AAAA    fd5e:5615:65f4:cce1:be24:11ff:fe13:62cc`
 
