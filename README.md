@@ -45,3 +45,5 @@ docker compose logs
 our entire *RPZ* sourcing lists at **ns3.home** and **ns4.home** to
 be available as a CDB file that we can use here.
   * [blocklist-domains](https://github.com/dmachard/blocklist-domains)
+  * <https://github.com/dmachard/python-blocklist-aggregator/blob/main/blocklist_aggregator/blocklist.conf>
+
