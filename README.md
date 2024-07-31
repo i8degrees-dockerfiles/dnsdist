@@ -32,6 +32,16 @@ integrated with `dnsdist`, please generate a passphrase:
 # STUB
 ```
 
+#### webserver api
+
+[dnsdist: webserver](https://dnsdist.org/guides/webserver.html)
+
+```shell
+cd "~/dnsdist.git"
+source .env.secrets;
+curl -Lv -H "X-API-Key: $DNSDIST_API_KEY" http://localhost:8083/jsonstat?command=stats | jq .
+```
+
 ### dev
 
 ```shell

@@ -51,7 +51,8 @@ services:
       # unencrypted DNS UDP
       - "53:53/udp"
       # webserver
-      - "127.0.0.1:8083:8083"
+      - "8083:8083"
+      #- "127.0.0.1:8083:8083"
       # console
       - "127.0.0.1:5199:5199"
     networks:
