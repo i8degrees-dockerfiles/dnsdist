@@ -22,7 +22,7 @@ services:
   dnsdist:
     hostname: "dnsdist-1"
     image: "powerdns/dnsdist-19:1.9.6"
-    restart: "on-failure:2"
+    restart: unless-stopped
     tty: true
     user: "pdns:pdns" # 953:953
     stdin_open: true
@@ -57,4 +57,9 @@ services:
       - "127.0.0.1:5199:5199"
     networks:
       - traefik-proxy
+    labels:
+      - "homepage.group=syn"
+      - "homepage.name=dnsdist-1"
+      - "homepage.siteMonitor=http://docker.fs1.home:8083"
+      - "homepage.ping=docker.fs1.home"
 
