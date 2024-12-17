@@ -1,6 +1,0 @@
--- 1. https://dnsdist.org/guides/dns-over-https.html
-
--- TODO(JEFF): Generate certificates with step-ca
--- TODO(JEFF): Support for IPv6
-addDOHLocal("192.168.12.12:8053", '/etc/ssl/certs/docker.fs1.home.pem', '/etc/ssl/private/docker.fs1.home.pem' "/", {customResponseHeaders={["link"]="<https://ns2.home/policy.html> rel=\\"service-meta\\"; type=\\"text/html\\""}})
-

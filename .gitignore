@@ -16,3 +16,8 @@ mounts/config/conf.d/_api.conf
 !mounts/config/conf.d
 !mounts/config
 
+mounts/ssl/tls.key
+mounts/ssl/tls.pem
+!mounts/ssl/ca.pem
+!mounts/ssl/.placeholder
+

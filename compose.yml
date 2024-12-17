@@ -35,6 +35,9 @@ services:
       - "./mounts/config/dnsdist.conf:/etc/dnsdist/dnsdist.conf:ro"
       - "./mounts/logs/dnsdist.log:/var/log/dnsdist.log:rw"
       #- config:/test:rw
+      - "./mounts/ssl/ca.pem:/etc/ssl/ca.pem:ro"
+      - "./mounts/ssl/tls.pem:/etc/ssl/tls.pem:ro"
+      - "./mounts/ssl/tls.key:/etc/ssl/tls.key:ro"
     environment:
       - TZ=America/Chicago
       - LC_TIME=C.UTF-8
@@ -43,23 +46,50 @@ services:
       - "./.env.secrets"
     ports:
       # DNS over HTTP(S)
-      - "8053:8053"
+      #- "443:443"
       # DNS over TLS
-      - "853:853"
+      - "8053:8053"
       # unencrypted DNS TCP
       - "53:53"
       # unencrypted DNS UDP
       - "53:53/udp"
       # webserver
       - "8083:8083"
-      #- "127.0.0.1:8083:8083"
       # console
-      - "127.0.0.1:5199:5199"
+      - "5199:5199"
     networks:
       - traefik-proxy
     labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dnsdist.entrypoints=websecure"
+      - "traefik.http.routers.dnsdist.rule=Host(`logs.dnsdist.fs1.home`) && PathPrefix(`/`)"
+      - "traefik.http.services.dnsdist.loadbalancer.server.port=8083"
+      - "traefik.http.routers.dnsdist.tls.certresolver=staging-web-acme"
+      - "traefik.http.routers.dnsdist.service=dnsdist"
+      #
+      - "traefik.http.routers.console.entrypoints=websecure"
+      - "traefik.http.routers.console.rule=Host(`console.dnsdist.fs1.home`) && PathPrefix(`/`)"
+      - "traefik.http.services.console.loadbalancer.server.port=5199"
+      - "traefik.http.routers.console.tls.certresolver=staging-web-acme"
+      - "traefik.http.routers.console.service=console"
+      #
+      - "traefik.tcp.routers.dns-tcp.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.dns-tcp.entrypoints=dns-tcp"
+      - "traefik.tcp.services.dns-tcp.loadbalancer.server.port=53"
+      - "traefik.tcp.routers.dns-tcp.service=dns-tcp"
+      #
+      - "traefik.tcp.routers.dns-doh.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.dns-doh.entrypoints=dns-doh"
+      - "traefik.tcp.services.dns-doh.loadbalancer.server.port=443"
+      - "traefik.tcp.routers.dns-doh.service=dns-doh"
+      #
+      - "traefik.tcp.routers.dns-tls.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.dns-tls.entrypoints=dns-tls"
+      - "traefik.tcp.services.dns-tls.loadbalancer.server.port=8053"
+      - "traefik.tcp.routers.dns-tls.service=dns-tls"
+      #
       - "homepage.group=syn"
-      - "homepage.name=dnsdist-1"
-      - "homepage.siteMonitor=http://docker.fs1.home:8083"
+      - "homepage.name=dnsdist"
+      - "homepage.siteMonitor=http://docker.fs1.home:8083/"
+      #- "homepage.siteMonitor=https://dnsdist.fs1.home"
       - "homepage.ping=docker.fs1.home"
-
