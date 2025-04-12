@@ -30,6 +30,7 @@ services:
     command: ["--disable-syslog", "--uid", "pdns", "--gid", "pdns", "--verbose"]
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
+      - "/etc/ssl/certs:/etc/ssl/certs:ro"
       - "./mounts/config/conf.d/_api.conf:/etc/dnsdist/conf.d/_api.conf:rw"
       - "./mounts/config/conf.d:/etc/dnsdist/conf.d:ro"
       - "./mounts/config/dnsdist.conf:/etc/dnsdist/dnsdist.conf:ro"
@@ -45,47 +46,51 @@ services:
     env_file:
       - "./.env.secrets"
     ports:
-      # DNS over HTTP(S)
-      #- "443:443"
-      # DNS over TLS
-      - "8053:8053"
-      # unencrypted DNS TCP
-      - "53:53"
-      # unencrypted DNS UDP
+      # DNS over HTTP(S); dns-doh
+      - "433:443"
+      # DNS over TLS; dns-tls
+      - "853:853" # tcp
+      # unencrypted DNS TCP; dns-tcp
+      - "53:53/tcp"
+      # DEPRECATED(JEFF): The UDP endpoint should never be used
+      # for new setups as it will some day be removed -- the TCP
+      # endpoint should always be used instead.
+      # unencrypted DNS UDP; dns-udp
       - "53:53/udp"
-      # webserver
+      # webserver; dns-web
       - "8083:8083"
-      # console
+      # console; dns-console
       - "5199:5199"
     networks:
       - traefik-proxy
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.dnsdist.entrypoints=websecure"
+      # dnsdist webserver endpoint
+      - "traefik.http.routers.dnsdist.entrypoints=web"
       - "traefik.http.routers.dnsdist.rule=Host(`logs.dnsdist.fs1.home`) && PathPrefix(`/`)"
       - "traefik.http.services.dnsdist.loadbalancer.server.port=8083"
       - "traefik.http.routers.dnsdist.tls.certresolver=staging-web-acme"
       - "traefik.http.routers.dnsdist.service=dnsdist"
-      #
-      - "traefik.http.routers.console.entrypoints=websecure"
+      # dnsdist console
+      - "traefik.http.routers.console.entrypoints=web"
       - "traefik.http.routers.console.rule=Host(`console.dnsdist.fs1.home`) && PathPrefix(`/`)"
       - "traefik.http.services.console.loadbalancer.server.port=5199"
       - "traefik.http.routers.console.tls.certresolver=staging-web-acme"
       - "traefik.http.routers.console.service=console"
-      #
+      # dns-tcp
       - "traefik.tcp.routers.dns-tcp.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.dns-tcp.entrypoints=dns-tcp"
       - "traefik.tcp.services.dns-tcp.loadbalancer.server.port=53"
       - "traefik.tcp.routers.dns-tcp.service=dns-tcp"
-      #
+      # dns-doh
       - "traefik.tcp.routers.dns-doh.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.dns-doh.entrypoints=dns-doh"
-      - "traefik.tcp.services.dns-doh.loadbalancer.server.port=443"
+      - "traefik.tcp.services.dns-doh.loadbalancer.server.port=433"
       - "traefik.tcp.routers.dns-doh.service=dns-doh"
-      #
+      # dns-tls
       - "traefik.tcp.routers.dns-tls.rule=HostSNI(`*`)"
       - "traefik.tcp.routers.dns-tls.entrypoints=dns-tls"
-      - "traefik.tcp.services.dns-tls.loadbalancer.server.port=8053"
+      - "traefik.tcp.services.dns-tls.loadbalancer.server.port=853"
       - "traefik.tcp.routers.dns-tls.service=dns-tls"
       #
       - "homepage.group=syn"
