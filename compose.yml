@@ -10,18 +10,10 @@ networks:
     attachable: true
     external: true
 
-volumes:
-  config:
-    driver: local
-    driver_opts:
-      type: nfs
-      o: addr=fs1-san.home,rw,nolock,soft
-      device: :/mnt/fs1/Applications
-
 services:
   dnsdist:
     hostname: "dnsdist-1"
-    image: "powerdns/dnsdist-19:1.9.6"
+    image: "powerdns/dnsdist-19:1.9.11"
     restart: unless-stopped
     tty: true
     user: "pdns:pdns" # 953:953
